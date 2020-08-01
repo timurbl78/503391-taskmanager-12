@@ -8,4 +8,7 @@
 *.woff2 binary
 
 .idea/
-node_modules
+node_modules/
+
+public/bundle.js
+public/bundle.js.map
