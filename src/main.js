@@ -26,7 +26,7 @@ const siteBoardTasksElement = siteBoardElement.querySelector(`.board__tasks`);
 
 render(siteBoardTasksElement, createTaskEditTemplate(tasks[0]), `beforeend`);
 
-for (let i = 0; i < TASK_COUNT; i++) {
+for (let i = 1; i < TASK_COUNT; i++) {
   render(siteBoardTasksElement, createTaskTemplate(tasks[i]), `beforeend`);
 }
 
