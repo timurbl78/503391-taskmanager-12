@@ -4,6 +4,7 @@ import {createLoadMoreButtonTemplate} from "./view/load-more-button";
 import {createMainMenuTemplate} from "./view/main-menu";
 import {createTaskEditTemplate} from "./view/task-edit";
 import {createTaskTemplate} from "./view/task";
+import {generateTask} from "./mock/task";
 
 const TASK_COUNT = 3;
 
