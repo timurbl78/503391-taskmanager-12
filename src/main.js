@@ -6,7 +6,9 @@ import {createTaskEditTemplate} from "./view/task-edit";
 import {createTaskTemplate} from "./view/task";
 import {generateTask} from "./mock/task";
 
-const TASK_COUNT = 3;
+const TASK_COUNT = 15;
+
+const tasks = new Array(TASK_COUNT).fill().map(generateTask);
 
 const render = (container, code, place) => {
   container.insertAdjacentHTML(place, code);
@@ -22,10 +24,10 @@ render(siteMainElement, createBoardTemplate(), `beforeend`);
 const siteBoardElement = siteMainElement.querySelector(`.board`);
 const siteBoardTasksElement = siteBoardElement.querySelector(`.board__tasks`);
 
-render(siteBoardTasksElement, createTaskEditTemplate(), `beforeend`);
+render(siteBoardTasksElement, createTaskEditTemplate(tasks[0]), `beforeend`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
-  render(siteBoardTasksElement, createTaskTemplate(), `beforeend`);
+  render(siteBoardTasksElement, createTaskTemplate(tasks[i]), `beforeend`);
 }
 
 render(siteBoardElement, createLoadMoreButtonTemplate(), `beforeend`);
