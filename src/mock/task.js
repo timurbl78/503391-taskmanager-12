@@ -1,16 +1,17 @@
 import {COLORS} from "../const";
 import {getRandomInteger} from "../utils";
 
+const DESCRIPTIONS = [
+  `Изучить теорию`,
+  `Сделать домашку`,
+  `Пройти интенив на соточку`,
+];
+const MAX_DAYS_GAP = 7;
+
 const generateDescription = () => {
-  const description = [
-    `Изучить теорию`,
-    `Сделать домашку`,
-    `Пройти интенив на соточку`,
-  ];
+  const randomIndex = getRandomInteger(0, DESCRIPTIONS.length - 1);
 
-  const randomIndex = getRandomInteger(0, description.length - 1);
-
-  return description[randomIndex];
+  return DESCRIPTIONS[randomIndex];
 };
 
 const generateDate = () => {
@@ -19,8 +20,7 @@ const generateDate = () => {
     return null;
   }
 
-  const maxDaysGap = 7;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const daysGap = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
   const currentDate = new Date();
 
   currentDate.setHours(23, 59, 59, 999);

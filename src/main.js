@@ -11,7 +11,6 @@ const TASK_COUNT = 20;
 const TASK_COUNT_PER_STEP = 8;
 
 const tasks = new Array(TASK_COUNT).fill().map(generateTask);
-console.log(tasks);
 const filters = generateFilter(tasks);
 
 const render = (container, code, place) => {
