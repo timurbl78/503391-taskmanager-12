@@ -8,7 +8,7 @@ import TaskEditView from "./view/task-edit";
 import TaskView from "./view/task";
 import {generateTask} from "./mock/task";
 import {generateFilter} from "./mock/filter";
-import {renderTemplate, renderElement, RenderPosition} from "./utils";
+import {renderElement, RenderPosition} from "./utils";
 
 const TASK_COUNT = 20;
 const TASK_COUNT_PER_STEP = 8;
