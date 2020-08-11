@@ -1,16 +1,16 @@
 import {createElement} from "../utils";
 
-export default class Board {
+export default class TaskList {
   constructor() {
     this._element = null;
   }
 
-  _createBoardTemplate() {
-    return (`<section class="board container"></section>`);
+  _createTaskListTemplate() {
+    return `<div class="board__tasks"></div>`;
   }
 
   _getTemplate() {
-    return this._createBoardTemplate();
+    return this._createTaskListTemplate();
   }
 
   getElement() {

@@ -1,30 +1,36 @@
-import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate} from "../utils";
+import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate, createElement} from "../utils";
 
-export const createTaskTemplate = (task) => {
-  const {color, description, dueDate, repeatingDays, isArchive, isFavorite} = task;
+export default class Task {
+  constructor(task) {
+    this._element = null;
+    this._task = task;
+  }
 
-  const date = dueDate !== null
-    ? humanizeTaskDueDate(dueDate)
-    : ``;
+  _createTaskTemplate(task) {
+    const {color, description, dueDate, repeatingDays, isArchive, isFavorite} = task;
 
-  const deadlineClassName = isTaskExpired(dueDate)
-    ? `card--deadline`
-    : ``;
+    const date = dueDate !== null
+      ? humanizeTaskDueDate(dueDate)
+      : ``;
 
-  const repeatClassName = isTaskRepeating(repeatingDays)
-    ? `card--repeat`
-    : ``;
+    const deadlineClassName = isTaskExpired(dueDate)
+      ? `card--deadline`
+      : ``;
 
-  const archiveClassName = isArchive
-    ? `card__btn--archive card__btn--disabled`
-    : `card__btn--archive`;
+    const repeatClassName = isTaskRepeating(repeatingDays)
+      ? `card--repeat`
+      : ``;
 
-  const favoriteClassName = isFavorite
-    ? `card__btn--favorites card__btn--disabled`
-    : `card__btn--favorites`;
+    const archiveClassName = isArchive
+      ? `card__btn--archive card__btn--disabled`
+      : `card__btn--archive`;
 
-  return (
-    `<article class="card card--${color} ${deadlineClassName} ${repeatClassName}">
+    const favoriteClassName = isFavorite
+      ? `card__btn--favorites card__btn--disabled`
+      : `card__btn--favorites`;
+
+    return (
+      `<article class="card card--${color} ${deadlineClassName} ${repeatClassName}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -67,5 +73,22 @@ export const createTaskTemplate = (task) => {
         </div>
       </div>
     </article>`
-  );
-};
+    );
+  }
+
+  _getTemplate() {
+    return this._createTaskTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

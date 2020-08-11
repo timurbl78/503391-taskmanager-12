@@ -1,6 +1,13 @@
-export const createMainMenuTemplate = () => {
-  return (
-    `<section class="control__btn-wrap">
+import {createElement} from "../utils";
+
+export default class MainMenu {
+  constructor() {
+    this._element = null;
+  }
+
+  _createMainMenuTemplate() {
+    return (
+      `<section class="control__btn-wrap">
           <input
             type="radio"
             name="control"
@@ -28,5 +35,22 @@ export const createMainMenuTemplate = () => {
             >STATISTICS</label
           >
         </section>`
-  );
-};
+    );
+  }
+
+  _getTemplate() {
+    return this._createMainMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
