@@ -6,6 +6,7 @@ import {createTaskEditTemplate} from "./view/task-edit";
 import {createTaskTemplate} from "./view/task";
 import {generateTask} from "./mock/task";
 import {generateFilter} from "./mock/filter";
+import {renderTemplate, RenderPosition} from "./utils";
 
 const TASK_COUNT = 20;
 const TASK_COUNT_PER_STEP = 8;
@@ -20,23 +21,23 @@ const render = (container, code, place) => {
 const siteMainElement = document.querySelector(`.main`);
 const siteControlElement = siteMainElement.querySelector(`.main__control`);
 
-render(siteControlElement, createMainMenuTemplate(), `beforeend`);
-render(siteMainElement, createFiltersTemplate(filters), `beforeend`);
-render(siteMainElement, createBoardTemplate(), `beforeend`);
+renderTemplate(siteControlElement, createMainMenuTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(siteMainElement, createFiltersTemplate(filters), RenderPosition.BEFOREEND);
+renderTemplate(siteMainElement, createBoardTemplate(), RenderPosition.BEFOREEND);
 
 const siteBoardElement = siteMainElement.querySelector(`.board`);
 const siteBoardTasksElement = siteBoardElement.querySelector(`.board__tasks`);
 
-render(siteBoardTasksElement, createTaskEditTemplate(tasks[0]), `beforeend`);
+renderTemplate(siteBoardTasksElement, createTaskEditTemplate(tasks[0]), RenderPosition.BEFOREEND);
 
 for (let i = 1; i < Math.min(TASK_COUNT_PER_STEP, tasks.length); i++) {
-  render(siteBoardTasksElement, createTaskTemplate(tasks[i]), `beforeend`);
+  renderTemplate(siteBoardTasksElement, createTaskTemplate(tasks[i]), RenderPosition.BEFOREEND);
 }
 
 if (tasks.length > TASK_COUNT_PER_STEP) {
   let renderedTaskCount = TASK_COUNT_PER_STEP;
 
-  render(siteBoardElement, createLoadMoreButtonTemplate(), `beforeend`);
+  renderTemplate(siteBoardElement, createLoadMoreButtonTemplate(), RenderPosition.BEFOREEND);
 
   const loadMoreButton = siteBoardElement.querySelector(`.load-more`);
 
@@ -44,7 +45,7 @@ if (tasks.length > TASK_COUNT_PER_STEP) {
     evt.preventDefault();
     tasks
       .slice(renderedTaskCount, renderedTaskCount + TASK_COUNT_PER_STEP)
-      .forEach((task) => render(siteBoardTasksElement, createTaskTemplate(task), `beforeend`));
+      .forEach((task) => renderTemplate(siteBoardTasksElement, createTaskTemplate(task), RenderPosition.BEFOREEND));
 
     renderedTaskCount += TASK_COUNT_PER_STEP;
 
