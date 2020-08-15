@@ -1,8 +1,8 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class Filters {
+export default class Filters extends AbstractView {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
   }
 
@@ -38,17 +38,5 @@ export default class Filters {
 
   _getTemplate() {
     return this._createFiltersTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

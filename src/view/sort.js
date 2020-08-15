@@ -1,10 +1,6 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class Sort {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Sort extends AbstractView {
   _createSortTemplate() {
     return (`<div class="board__filter-list">
     <a href="#" class="board__filter">SORT BY DEFAULT</a>
@@ -15,17 +11,5 @@ export default class Sort {
 
   _getTemplate() {
     return this._createSortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

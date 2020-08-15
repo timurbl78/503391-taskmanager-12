@@ -1,8 +1,9 @@
-import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate, createElement} from "../utils";
+import AbstractView from "./abstract";
+import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate} from "../utils";
 
-export default class Task {
+export default class Task extends AbstractView {
   constructor(task) {
-    this._element = null;
+    super();
     this._task = task;
   }
 
@@ -78,17 +79,5 @@ export default class Task {
 
   _getTemplate() {
     return this._createTaskTemplate(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
