@@ -1,5 +1,5 @@
 import AbstractView from "./abstract";
-import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate} from "../utils";
+import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate} from "../utils/task";
 
 export default class Task extends AbstractView {
   constructor(task) {
