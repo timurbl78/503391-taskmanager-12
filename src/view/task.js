@@ -1,9 +1,22 @@
-import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate, createElement} from "../utils";
+import AbstractView from "./abstract";
+import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate} from "../utils/task";
 
-export default class Task {
+export default class Task extends AbstractView {
   constructor(task) {
-    this._element = null;
+    super();
     this._task = task;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
+  }
+
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, this._editClickHandler);
   }
 
   _createTaskTemplate(task) {
@@ -78,17 +91,5 @@ export default class Task {
 
   _getTemplate() {
     return this._createTaskTemplate(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

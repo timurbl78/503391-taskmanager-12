@@ -1,27 +1,11 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class Board {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Board extends AbstractView {
   _createBoardTemplate() {
     return (`<section class="board container"></section>`);
   }
 
   _getTemplate() {
     return this._createBoardTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
