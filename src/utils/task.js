@@ -15,8 +15,8 @@ export const isTaskExpired = (dueDate) => {
   return currentDate.getTime() > dueDate.getTime();
 };
 
-export const isTaskRepeating = (repeatingDays) => {
-  return Object.values(repeatingDays).some(Boolean);
+export const isTaskRepeating = (repeating) => {
+  return Object.values(repeating).some(Boolean);
 };
 
 export const isTaskExpiringToday = (dueDate) => {
