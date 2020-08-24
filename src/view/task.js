@@ -1,5 +1,5 @@
 import AbstractView from "./abstract";
-import {isTaskRepeating, isTaskExpired, humanizeTaskDueDate} from "../utils/task";
+import {isTaskRepeating, isTaskExpired, formatTaskDueDate} from "../utils/task";
 
 export default class Task extends AbstractView {
   constructor(task) {
@@ -7,6 +7,8 @@ export default class Task extends AbstractView {
     this._task = task;
 
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._archiveClickHandler = this._archiveClickHandler.bind(this);
   }
 
   _editClickHandler(evt) {
@@ -14,23 +16,41 @@ export default class Task extends AbstractView {
     this._callback.editClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _archiveClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.archiveClick();
+  }
+
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, this._editClickHandler);
   }
 
-  _createTaskTemplate(task) {
-    const {color, description, dueDate, repeatingDays, isArchive, isFavorite} = task;
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
+  }
 
-    const date = dueDate !== null
-      ? humanizeTaskDueDate(dueDate)
-      : ``;
+  setArchiveClickHandler(callback) {
+    this._callback.archiveClick = callback;
+    this.getElement().querySelector(`.card__btn--archive`).addEventListener(`click`, this._archiveClickHandler);
+  }
+
+  _createTaskTemplate(task) {
+    const {color, description, dueDate, repeating, isArchive, isFavorite} = task;
+
+    const date = formatTaskDueDate(dueDate);
 
     const deadlineClassName = isTaskExpired(dueDate)
       ? `card--deadline`
       : ``;
 
-    const repeatClassName = isTaskRepeating(repeatingDays)
+    const repeatClassName = isTaskRepeating(repeating)
       ? `card--repeat`
       : ``;
 
