@@ -9,7 +9,7 @@ const BLANK_TASK = {
   color: COLORS[0],
   description: ``,
   dueDate: null,
-  repeatingDays: {
+  repeating: {
     mo: false,
     tu: false,
     we: false,
