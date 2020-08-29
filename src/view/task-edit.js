@@ -1,3 +1,4 @@
+import he from "he";
 import SmartView from "./smart";
 import {COLORS} from "../const";
 import {isTaskRepeating, formatTaskDueDate} from "../utils/task";
@@ -259,7 +260,7 @@ export default class TaskEdit extends SmartView {
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${description}</textarea>
+            >${he.encode(description)}</textarea>
           </label>
         </div>
         <div class="card__settings">
