@@ -1,3 +1,4 @@
+import he from "he";
 import SmartView from "./smart";
 import {COLORS} from "../const";
 import {isTaskRepeating, formatTaskDueDate} from "../utils/task";
@@ -9,7 +10,7 @@ const BLANK_TASK = {
   color: COLORS[0],
   description: ``,
   dueDate: null,
-  repeatingDays: {
+  repeating: {
     mo: false,
     tu: false,
     we: false,
@@ -29,6 +30,7 @@ export default class TaskEdit extends SmartView {
     this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._dueDateToggleHandler = this._dueDateToggleHandler.bind(this);
     this._dueDateChangeHandler = this._dueDateChangeHandler.bind(this);
@@ -66,6 +68,7 @@ export default class TaskEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setInnerHandlers() {
@@ -144,6 +147,16 @@ export default class TaskEdit extends SmartView {
     this._callback.formSubmit(TaskEdit.parseDataToTask(this._data));
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TaskEdit.parseDataToTask(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
@@ -153,6 +166,15 @@ export default class TaskEdit extends SmartView {
     this.updateData(
         TaskEdit.parseTaskToData(task)
     );
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   _createTaskEditColorsTemplate(currentColor) {
@@ -238,7 +260,7 @@ export default class TaskEdit extends SmartView {
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${description}</textarea>
+            >${he.encode(description)}</textarea>
           </label>
         </div>
         <div class="card__settings">
