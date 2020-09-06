@@ -7,10 +7,18 @@ import TasksModel from "./model/tasks.js";
 import FilterModel from "./model/filter.js";
 import {render, RenderPosition, remove} from "./utils/render";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
+import Api from "./api";
 
 const TASK_COUNT = 20;
+const AUTHORIZATION = `Basic hS2sdr33dfSf4sa2j`;
+const END_POINT = `https://12.ecmascript.pages.academy/task-manager`;
 
 const tasks = new Array(TASK_COUNT).fill().map(generateTask);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getTasks().then((tasks) => {
+  console.log(tasks);
+});
 
 const tasksModel = new TasksModel();
 tasksModel.setTasks(tasks);
