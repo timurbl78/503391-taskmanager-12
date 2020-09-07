@@ -2,8 +2,9 @@ import BoardView from "../view/board.js";
 import SortView from "../view/sort.js";
 import TaskListView from "../view/task-list.js";
 import NoTaskView from "../view/no-task.js";
+import LoadingView from "../view/loading";
 import LoadMoreButtonView from "../view/load-more-button.js";
-import TaskPresenter from "./task";
+import TaskPresenter, {State as TaskPresenterViewState} from "./task";
 import TaskNewPresenter from "./task-new.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortTaskUp, sortTaskDown} from "../utils/task";
@@ -13,13 +14,15 @@ import {SortType, UpdateType, UserAction} from "../const";
 const TASK_COUNT_PER_STEP = 8;
 
 export default class Board {
-  constructor(boardContainer, tasksModel, filterModel) {
+  constructor(boardContainer, tasksModel, filterModel, api) {
     this._tasksModel = tasksModel;
     this._filterModel = filterModel;
     this._boardContainer = boardContainer;
     this._renderedTaskCount = TASK_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
     this._taskPresenter = {};
+    this._api = api;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -27,6 +30,7 @@ export default class Board {
     this._boardComponent = new BoardView();
     this._taskListComponent = new TaskListView();
     this._noTaskComponent = new NoTaskView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -86,13 +90,34 @@ export default class Board {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_TASK:
-        this._tasksModel.updateTask(updateType, update);
+        this._taskPresenter[update.id].setViewState(TaskPresenterViewState.SAVING);
+        this._api.updateTask(update)
+          .then((response) => {
+            this._tasksModel.updateTask(updateType, response);
+          })
+          .catch(() => {
+            this._taskPresenter[update.id].setViewState(TaskPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_TASK:
-        this._tasksModel.addTask(updateType, update);
+        this._taskNewPresenter.setSaving();
+        this._api.addTask(update)
+          .then((response) => {
+            this._tasksModel.addTask(updateType, response);
+          })
+          .catch(() => {
+            this._taskNewPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_TASK:
-        this._tasksModel.deleteTask(updateType, update);
+        this._taskPresenter[update.id].setViewState(TaskPresenterViewState.DELETING);
+        this._api.deleteTask(update)
+          .then(() => {
+            this._tasksModel.deleteTask(updateType, update);
+          })
+          .catch(() => {
+            this._taskPresenter[update.id].setViewState(TaskPresenterViewState.ABORTING);
+          });
         break;
     }
   }
@@ -108,6 +133,11 @@ export default class Board {
         break;
       case UpdateType.MAJOR:
         this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderBoard();
         break;
     }
@@ -142,6 +172,10 @@ export default class Board {
 
   _renderTasks(tasks) {
     tasks.forEach((task) => this._renderTask(task));
+  }
+
+  _renderLoading() {
+    render(this._boardComponent, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderNoTasks() {
@@ -196,6 +230,11 @@ export default class Board {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const tasks = this._getTasks();
     const taskCount = tasks.length;
 
