@@ -96,27 +96,31 @@ export default class Task {
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign(
+    this._changeData(
         UserAction.UPDATE_TASK,
         UpdateType.MINOR,
-        {},
-        this._task,
-        {
-          isFavorite: !this._task.isFavorite
-        }
-    ));
+        Object.assign(
+            {},
+            this._task,
+            {
+              isFavorite: !this._task.isFavorite
+            }
+        )
+    );
   }
 
   _handleArchiveClick() {
-    this._changeData(Object.assign(
+    this._changeData(
         UserAction.UPDATE_TASK,
         UpdateType.MINOR,
-        {},
-        this._task,
-        {
-          isArchive: !this._task.isArchive
-        }
-    ));
+        Object.assign(
+            {},
+            this._task,
+            {
+              isArchive: !this._task.isArchive
+            }
+        )
+    );
   }
 
   _handleFormSubmit(update) {
