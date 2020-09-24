@@ -7,20 +7,27 @@ import FilterModel from "./model/filter.js";
 import {render, RenderPosition, remove} from "./utils/render.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
 import Api from "./api/index.js";
+import Store from "./api/store";
+import Provider from "./api/provider";
 
 const AUTHORIZATION = `Basic hS2sd3dcl1sa2j`;
 const END_POINT = `https://12.ecmascript.pages.academy/task-manager`;
+const STORE_PREFIX = `taskmanager-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const tasksModel = new TasksModel();
 const filterModel = new FilterModel();
 
 const siteMenuComponent = new SiteMenuView();
-const boardPresenter = new BoardPresenter(siteMainElement, tasksModel, filterModel, api);
+const boardPresenter = new BoardPresenter(siteMainElement, tasksModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, tasksModel);
 
 const handleTaskNewFormClose = () => {
@@ -55,7 +62,7 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 boardPresenter.init();
 
-api.getTasks()
+apiWithProvider.getTasks()
   .then((tasks) => {
     tasksModel.setTasks(UpdateType.INIT, tasks);
     render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
@@ -76,3 +83,11 @@ window.addEventListener(`load`, () => {
     });
 });
 
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
